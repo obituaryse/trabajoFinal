@@ -1,10 +1,12 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
-
+const cors = require('cors')
 const app = express();
 
 const Libro = require("../models").Libro;
+
+app.use(cors())
 
 app.get("/libros/:pagina", (req, res) => {
     let limite = 5 * req.params.pagina;
@@ -17,7 +19,7 @@ app.get("/libros/:pagina", (req, res) => {
     Libro.findAndCountAll({
         limit: limit,
         offset: from,
-        attributes: ["id", "titulo", "descripcion", "precio"],
+        attributes: ["id", "titulo", "descripcion", "precio", "imagen"],
     })
         .then(({ count, rows }) => {
             res.json({
@@ -34,7 +36,7 @@ app.get("/libros/:pagina", (req, res) => {
         );
 });
 
-app.get("/libros/:libroId", (req, res) => {
+app.get("/libro/:libroId", (req, res) => {
     let libroId = req.params.libroId;
 
     Libro.findOne({ where: { id: libroId } })
@@ -57,7 +59,8 @@ app.post("/libros", (req, res) => {
         titulo: body.titulo,
         descripcion: body.descripcion,
         precio: body.precio,
-        autorId: body.autorId
+        autorId: body.autorId,
+        imagen: body.imagen
     })
         .then((libro) => {
             res.status(201).json({
@@ -73,7 +76,7 @@ app.post("/libros", (req, res) => {
         );
 });
 
-app.put("/libros/:libroId", (req, res) => {
+app.put("/libro/:libroId", (req, res) => {
     let libroId = req.params.libroId;
     let body = _.pick(req.body, ["titulo", "descripcion", "precio", "autorId"]);
 
@@ -96,7 +99,7 @@ app.put("/libros/:libroId", (req, res) => {
         );
 });
 
-app.delete("/libros/:libroId", (req, res) => {
+app.delete("/libro/:libroId", (req, res) => {
     let libroId = req.params.libroId;
     Libro.destroy({
         where: {

@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
   Libro.init({
     titulo: DataTypes.STRING,
     descripcion: DataTypes.STRING,
-    precio: DataTypes.DECIMAL
+    precio: DataTypes.DECIMAL,
+    imagen: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Libro',
